@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
     private ActivityMainBinding binding;
     private LocationManager locationManager;
     private LocationListener locationListener;
-  //  private ActivityMainBinding binding;
     private EditText userMsgEdt;
     private Model model;
     private Tokenizer tokenizer;
@@ -70,15 +69,14 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
     private int maxLength = 100;
     private float lengthPenalty = 1.0f;
 
+    double lat;
+    double lng;
 
     private static boolean fileExists(Context context, String fileName) {
         File file = new File(context.getFilesDir(), fileName);
         return file.exists();
     }
 
-
-    double lat;
-    double lng;
 
     private static final String WEATHER_API_KEY = "1ab286ec641a41dd0fd542ab19beff5d"; // Replace with your API key
 
@@ -95,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
 
         try {
             Log.d("MyTag", "This is a===1==== debug message");
+            Log.d("MyTag", gatAllClothes());
             URL url = new URL(apiUrl);
             Log.d("MyTag", "This is a===2==== debug message");
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -150,6 +149,14 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
         }
     }
 
+    public String gatAllClothes() {
+        DatabaseManager databaseManager = new DatabaseManager(this);
+        List<String> clothesList = databaseManager.getAllClothes();
+        databaseManager.close();
+        return clothesList.toString();
+    }
+
+
 
 
     @Override
@@ -157,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
         StrictMode.ThreadPolicy gfgPolicy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(gfgPolicy);
         super.onCreate(savedInstanceState);
+
+        this.maxLength = 1000;
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -249,23 +258,13 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
                     return;
                 }
 
-                // Checking if the message entered
-                // by user is empty or not.
-                if (userMsgEdt.getText().toString().isEmpty()) {
-                    // if the edit text is empty display a toast message.
-                    Toast.makeText(MainActivity.this, "Please enter your message..", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 double latitude = lat;
                 double longitude = lng;
-
-                // Get weather data based on latitude and longitude
                 String weatherInfo = getWeather(latitude, longitude);
-                Toast.makeText(MainActivity.this, weatherInfo, Toast.LENGTH_LONG).show();
 
                 String promptQuestion = userMsgEdt.getText().toString();
-                String promptQuestion_formatted = "<system>You are a helpful AI assistant. Answer in two or three words. Please list 3 fashion item based on this conditions<|end|><|user|>"+weatherInfo+"<|end|><|user|>"+promptQuestion+"<|end|>\n<assistant|>";
+                String clothesItem = gatAllClothes();
+                String promptQuestion_formatted = "<system>You are a helpful AI assistant. Answer in two or three words. Please list 3 fashion item based on this conditions<|end|><|user|>"+weatherInfo+"<|end|><|user|>"+clothesItem+"This is list of fashion items that I have. Please recommend only from here.<|end|>\n<assistant|>";
                 Log.i("GenAI: prompt question", promptQuestion_formatted);
                 setVisibility();
 
