@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -65,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
         generatedTV = findViewById(R.id.sample_text);
         promptTV = findViewById(R.id.user_text);
         progressText = findViewById(R.id.progress_text);
-        settingsButton = findViewById(R.id.idIBSettings);
+        //settingsButton = findViewById(R.id.idIBSettings);
+        settingsButton = findViewById(R.id.configuration_button);
 
         // Trigger the download operation when the application is created
         try {
@@ -76,17 +78,8 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
         }
 
         settingsButton.setOnClickListener(v -> {
-            BottomSheet bottomSheet = new BottomSheet();
-            bottomSheet.setSettingsListener(new BottomSheet.SettingsListener() {
-                @Override
-                public void onSettingsApplied(int maxLength, float lengthPenalty) {
-                    MainActivity.this.maxLength = maxLength;
-                    MainActivity.this.lengthPenalty = lengthPenalty;
-                    Log.i(TAG, "Setting max response length to: " + maxLength);
-                    Log.i(TAG, "Setting length penalty to: " + lengthPenalty);
-                }
-            });
-            bottomSheet.show(getSupportFragmentManager(), "BottomSheet");
+            Intent intent = new Intent(MainActivity.this, ConfigurationActivity.class);
+            startActivity(intent);
         });
 
 

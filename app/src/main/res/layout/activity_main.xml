@@ -87,7 +87,7 @@
         tools:ignore="UseAppTint" />
 
     <ImageButton
-        android:id="@+id/idIBSettings"
+        android:id="@+id/configuration_button"
         android:layout_width="50dp"
         android:layout_height="60dp"
         android:layout_marginEnd="8dp"
