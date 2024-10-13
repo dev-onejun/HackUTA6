@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseManager {
     private DatabaseHelper dbHelper;
     private SQLiteDatabase database;
@@ -36,8 +39,21 @@ public class DatabaseManager {
         }
     }
 
-    public Cursor getAllDynamicText() {
-        return database.query(DatabaseHelper.DYNAMIC_TABLE_NAME, null, null, null, null, null, null);
+    public List<String> getAllClothes() {
+        List<String> clothesList = new ArrayList<>();
+        Cursor cursor = database.query(DatabaseHelper.DYNAMIC_TABLE_NAME,
+                new String[]{DatabaseHelper.DYNAMIC_COLUMN_NAME},
+                DatabaseHelper.DYNAMIC_COLUMN_USER_ID + " = (SELECT MAX(" + DatabaseHelper.DYNAMIC_COLUMN_USER_ID + ") FROM " + DatabaseHelper.DYNAMIC_TABLE_NAME + ")",
+                null, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String clothes = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.DYNAMIC_COLUMN_NAME));
+                clothesList.add(clothes);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return clothesList;
     }
 
     public void close() {

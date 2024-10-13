@@ -9,28 +9,6 @@
 
     <!--recycler view to display our chats-->
 
-
-    <TextView
-        android:id="@+id/user_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/rounded_corner2"
-        android:padding="8dp"
-        android:textAlignment="textEnd"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="16sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.855"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:visibility="visible" />
-
     <TextView
         android:id="@+id/sample_text"
         android:layout_width="0dp"
@@ -46,27 +24,12 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="16sp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/idEdtMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.144"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_text"
         app:layout_constraintVertical_bias="0.0"
-        tools:visibility="visible" />
-
-    <EditText
-        android:id="@+id/idEdtMessage"
-        android:layout_width="249dp"
-        android:layout_height="63dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="4"
-        android:backgroundTint="@color/blue"
-        android:hint="Enter Message"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        tools:visibility="visible"
+        tools:ignore="MissingConstraints" />
 
     <ImageButton
         android:id="@+id/idIBSend"

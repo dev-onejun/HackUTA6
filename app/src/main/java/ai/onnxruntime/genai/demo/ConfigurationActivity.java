@@ -66,23 +66,6 @@ public class ConfigurationActivity extends AppCompatActivity {
 
             databaseManager.insertDynamicTexts(userId, texts);
 
-//            Cursor cursor = databaseManager.getUserInfoById(1); // Assuming the ID is 1 for demonstration
-//            if (cursor.moveToFirst()) {
-//                String retrievedHeight = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_HEIGHT));
-//                String retrievedWeight = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_WEIGHT));
-//                Log.d("ConfigurationActivity", "Retrieved Height: " + retrievedHeight + ", Retrieved Weight: " + retrievedWeight);
-//                // Pop up the data
-//                new AlertDialog.Builder(this)
-//                        .setTitle("User Info")
-//                        .setMessage("Height: " + retrievedHeight + "\nWeight: " + retrievedWeight)
-//                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-//                            // Close the dialog and finish the activity
-//                            finish();
-//                        })
-//                        .show();
-//            }
-//            cursor.close();
-
             databaseManager.close();
             finish();
         });

@@ -6,16 +6,24 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +32,12 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import org.json.JSONObject;
+import org.json.JSONArray;// Make sure to include a JSON library for parsing the API response
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import ai.onnxruntime.genai.GenAIException;
 import ai.onnxruntime.genai.Generator;
@@ -37,34 +51,157 @@ import ai.onnxruntime.genai.Tokenizer;
 public class MainActivity extends AppCompatActivity implements Consumer<String> {
 
     private ActivityMainBinding binding;
-    private EditText userMsgEdt;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     private Model model;
     private Tokenizer tokenizer;
     private ImageButton sendMsgIB;
     private TextView generatedTV;
-    private TextView promptTV;
     private TextView progressText;
     private ImageButton settingsButton;
     private static final String TAG = "genai.demo.MainActivity";
     private int maxLength = 100;
     private float lengthPenalty = 1.0f;
 
+    double lat;
+    double lng;
+
     private static boolean fileExists(Context context, String fileName) {
         File file = new File(context.getFilesDir(), fileName);
         return file.exists();
     }
 
+
+    private static final String WEATHER_API_KEY = "1ab286ec641a41dd0fd542ab19beff5d"; // Replace with your API key
+
+
+    private String getWeather(double lat, double lon) {
+
+
+        String apiUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + WEATHER_API_KEY + "&units=metric";
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+
+        try {
+            InputStreamReader inputStream = new InputStreamReader(urlConnection.getInputStream());
+            reader = new BufferedReader(inputStream);
+
+            StringBuilder buffer = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line).append("\n");
+            }
+
+            if (buffer.length() == 0) {
+                return null; // No data retrieved
+            }
+
+            // Parse JSON response
+            JSONObject jsonResponse = new JSONObject(buffer.toString());
+            JSONObject mainObject = jsonResponse.getJSONObject("main");
+            JSONArray weatherArray = jsonResponse.getJSONArray("weather");
+            JSONObject weatherObject = weatherArray.getJSONObject(0);
+
+            // Extract temperature and weather description
+            double temp = mainObject.getDouble("temp");
+            String weatherDescription = weatherObject.getString("description");
+
+            // Return the formatted weather data
+            return "The current temperature is " + temp + "°C and the weather is " + weatherDescription + ".";
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching weather data: ", e);
+            return "Error retrieving weather data.";
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error closing stream: ", e);
+                }
+            }
+        }
+    }
+
+    public String gatAllClothes() {
+        DatabaseManager databaseManager = new DatabaseManager(this);
+        List<String> clothesList = databaseManager.getAllClothes();
+        databaseManager.close();
+        return clothesList.toString();
+    }
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StrictMode.ThreadPolicy gfgPolicy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(gfgPolicy);
         super.onCreate(savedInstanceState);
+
+        this.maxLength = 1000;
+        this.lengthPenalty = 0.5f;
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                // Get latitude and longitude
+                 lat = location.getLatitude();
+                 lng = location.getLongitude();
+
+                // Log the location data
+                Log.i("AAA", "Latitude: " + lat);
+                Log.i("AAA", "Longitude: " + lng);
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // Request location permissions
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+        } else {
+            // If permissions are granted, request location updates
+            requestLocationUpdates();
+        }
+    }
+
+    private void requestLocationUpdates() {
+        try {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    3000, 10, // Update every 3 seconds or when moved by 10 meters
+                    locationListener
+            );
+        } catch (SecurityException e) {
+            Log.e("AAA", "Location permission missing", e);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, request location updates
+                requestLocationUpdates();
+            } else {
+                // Permission denied, show a message or handle the case appropriately
+                Log.e("AAA", "Location permission denied");
+            }
+        }
 
         sendMsgIB = findViewById(R.id.idIBSend);
-        userMsgEdt = findViewById(R.id.idEdtMessage);
         generatedTV = findViewById(R.id.sample_text);
-        promptTV = findViewById(R.id.user_text);
         progressText = findViewById(R.id.progress_text);
         settingsButton = findViewById(R.id.configuration_button);
 
@@ -98,26 +235,22 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
                     return;
                 }
 
-                // Checking if the message entered
-                // by user is empty or not.
-                if (userMsgEdt.getText().toString().isEmpty()) {
-                    // if the edit text is empty display a toast message.
-                    Toast.makeText(MainActivity.this, "Please enter your message..", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                double latitude = lat;
+                double longitude = lng;
+                String weatherInfo = getWeather(latitude, longitude);
 
-                String promptQuestion = userMsgEdt.getText().toString();
-                String promptQuestion_formatted = "<system>You are a helpful AI assistant. Answer in two paragraphs or less<|end|><|user|>"+promptQuestion+"<|end|>\n<assistant|>";
+                String clothesItem = gatAllClothes();
+                String promptQuestion_formatted = "<system>You are a helpful AI assistant. Answer in two or three words. Please list 3 fashion item based on this conditions<|end|><|user|>"+weatherInfo+"<|end|><|user|>"+clothesItem+"This is list of fashion items that I have. Please recommend only from here.<|end|>\n<assistant|>";
                 Log.i("GenAI: prompt question", promptQuestion_formatted);
                 setVisibility();
 
                 // Disable send button while responding to prompt.
-                sendMsgIB.setEnabled(false);
-                sendMsgIB.setAlpha(0.5f);
+//                sendMsgIB.setEnabled(false);
+//                sendMsgIB.setAlpha(0.5f);
+                sendMsgIB.setEnabled(true);
+                sendMsgIB.setAlpha(1.0f);
 
-                promptTV.setText(promptQuestion);
                 // Clear Edit Text or prompt question.
-                userMsgEdt.setText("");
                 generatedTV.setText("");
 
                 new Thread(new Runnable() {
@@ -149,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
                             while (!generator.isDone()) {
                                 generator.computeLogits();
                                 generator.generateNextToken();
-                 
+
                                 int token = generator.getLastTokenInSequence(0);
 
                                 if (numTokens == 0) { //first token
@@ -199,6 +332,10 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
             }
         });
     }
+
+
+
+
 
     @Override
     protected void onDestroy() {
@@ -298,8 +435,6 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
     }
 
     public void setVisibility() {
-        TextView view = (TextView) findViewById(R.id.user_text);
-        view.setVisibility(View.VISIBLE);
         TextView botView = (TextView) findViewById(R.id.sample_text);
         botView.setVisibility(View.VISIBLE);
     }
