@@ -14,18 +14,30 @@ public class DatabaseManager {
         database = dbHelper.getWritableDatabase();
     }
 
-    public void insertUserInfo(String height, String weight) {
+    public long insertUserInfo(String height, String weight) {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_HEIGHT, height);
         values.put(DatabaseHelper.COLUMN_WEIGHT, weight);
-        database.insert(DatabaseHelper.TABLE_NAME, null, values);
+        return database.insert(DatabaseHelper.TABLE_NAME, null, values);
     }
 
-    public Cursor getUserInfoById(long id) {
-        String[] columns = {DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_HEIGHT, DatabaseHelper.COLUMN_WEIGHT};
-        String orderBy = DatabaseHelper.COLUMN_ID + " DESC";
-        String limit = "1";
-        return database.query(DatabaseHelper.TABLE_NAME, columns, null, null, null, null, orderBy, limit);
+    public void insertDynamicTexts(long userId, String[] texts) {
+        database.beginTransaction();
+        try {
+            for (String text : texts) {
+                ContentValues values = new ContentValues();
+                values.put(DatabaseHelper.DYNAMIC_COLUMN_USER_ID, userId);
+                values.put(DatabaseHelper.DYNAMIC_COLUMN_NAME, text);
+                database.insert(DatabaseHelper.DYNAMIC_TABLE_NAME, null, values);
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
+    }
+
+    public Cursor getAllDynamicText() {
+        return database.query(DatabaseHelper.DYNAMIC_TABLE_NAME, null, null, null, null, null, null);
     }
 
     public void close() {

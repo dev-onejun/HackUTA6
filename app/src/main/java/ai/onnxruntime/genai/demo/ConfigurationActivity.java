@@ -52,7 +52,19 @@ public class ConfigurationActivity extends AppCompatActivity {
             String height = heightEditText.getText().toString();
             String weight = weightEditText.getText().toString();
 
-            databaseManager.insertUserInfo(height, weight);
+            long userId = databaseManager.insertUserInfo(height, weight);
+
+            int childCount = dynamicEditTextContainer.getChildCount();
+            String[] texts = new String[childCount];
+            int index = 0;
+            for (int i = 0; i < childCount; i++) {
+                if (dynamicEditTextContainer.getChildAt(i) instanceof EditText) {
+                    EditText editText = (EditText) dynamicEditTextContainer.getChildAt(i);
+                    texts[index++] = editText.getText().toString();
+                }
+            }
+
+            databaseManager.insertDynamicTexts(userId, texts);
 
 //            Cursor cursor = databaseManager.getUserInfoById(1); // Assuming the ID is 1 for demonstration
 //            if (cursor.moveToFirst()) {
@@ -72,8 +84,6 @@ public class ConfigurationActivity extends AppCompatActivity {
 //            cursor.close();
 
             databaseManager.close();
-
-            // ... (Consider input validation and error handling here) ...
             finish();
         });
 
