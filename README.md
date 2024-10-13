@@ -25,7 +25,11 @@ We considered the following AI systems and concluded that they are not suitable 
 
 **Small Language Model (SLM)** is embedded friendly and has low computational cost, enabling the inference on-device and offline. Phi-3 [2] is an open-source SLM that is capable of generating text and answering questions. The project is based on the Phi-3 model. The recommendation is generated with the query-answer mechanism, using the designed query to fit the recommendation format by the project team.
 
-A prompt is composed by weather, temperature, weight and height of the user, and the clothes of the user. Weather and temperature is fetched from the OpenWeatherMap API [3]. The user's weight, height, and clothes are asked to provide a more accurate recommendation. The prompt is sent to the Phi-3 model, and the recommendation is generated. The recommendation is displayed on the screen.
+A prompt is composed by weather, temperature, weight and height of the user, and the clothes of the user. Weather and temperature is fetched from the OpenWeatherMap API [3]. The user's weight, height, and clothes are asked to provide a more accurate recommendation. The prompt is sent to the Phi-3 model, and the recommendation is generated. The recommendation is displayed on the screen. Specifically, we used the following designed prompt;
+
+``` plaintext
+You are a helpful AI assistant. Answer in two or three words. Please list 3 fashion item based on this conditions "+weatherInfo+" "+clothesItem+"This is list of fashion items that I have. Please recommend only from here.
+```
 
 ### Implementation
 
