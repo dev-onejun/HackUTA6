@@ -13,7 +13,6 @@ import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,12 +21,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -85,24 +81,8 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
         String apiUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + WEATHER_API_KEY + "&units=metric";
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
-        Log.d("MyTag", "This is a======== debug message");
-      //  Log.e("MyTag", "This is an======== error message");
-
 
         try {
-            Log.d("MyTag", "This is a===1==== debug message");
-            Log.d("MyTag", gatAllClothes());
-            URL url = new URL(apiUrl);
-            Log.d("MyTag", "This is a===2==== debug message");
-            urlConnection = (HttpURLConnection) url.openConnection();
-            Log.d("MyTag", "This is a====3==== debug message");
-            urlConnection.setRequestMethod("GET");
-            Log.d("MyTag", apiUrl);
-            urlConnection.connect();
-
-            Log.d("MyTag", "This is a====5==== debug message");
-         //   Log.e("MyTag", "This is an======== error message");
-
             InputStreamReader inputStream = new InputStreamReader(urlConnection.getInputStream());
             reader = new BufferedReader(inputStream);
 
@@ -149,9 +129,7 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
 
     public String gatAllClothes() {
         DatabaseManager databaseManager = new DatabaseManager(this);
-        Log.d(TAG, "gatAllClothes before data");
         List<String> clothesList = databaseManager.getAllClothes();
-        Log.d(TAG, "gatAllClothes after data");
         databaseManager.close();
         return clothesList.toString();
     }
@@ -180,8 +158,6 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
                 // Log the location data
                 Log.i("AAA", "Latitude: " + lat);
                 Log.i("AAA", "Longitude: " + lng);
-
-                // Here you can use the location data, e.g., to fetch weather info or other purposes.
             }
         };
         if (ActivityCompat.checkSelfPermission(MainActivity.this,
