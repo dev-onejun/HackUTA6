@@ -37,7 +37,7 @@ You are a helpful AI assistant. Answer in two or three words. Please list 3 fash
 
 ### Demo
 
-(Video)
+https://github.com/user-attachments/assets/bc89e08a-599b-4a1c-8475-5bac8b05aedb
 
 ### References
 
