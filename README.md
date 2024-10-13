@@ -33,7 +33,11 @@ You are a helpful AI assistant. Answer in two or three words. Please list 3 fash
 
 ### Implementation
 
+* System Architecture
+
 ![system_architecture](https://github.com/user-attachments/assets/b9752f23-5963-49f7-9bff-18c2b619d4b8)
+
+* UI Design
 
 |<img width="431" alt="1" src="https://github.com/user-attachments/assets/6f03fe51-87fb-4255-85b5-337b49652360">|<img width="431" alt="2" src="https://github.com/user-attachments/assets/72dbba29-bdb4-4985-97f5-d21a399fb1af">|<img width="431" alt="3" src="https://github.com/user-attachments/assets/bf78892c-e2c3-483e-8eb1-ab9c64ac2dc8">|
 |---|---|---|
