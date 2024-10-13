@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
         super.onCreate(savedInstanceState);
 
         this.maxLength = 1000;
+        this.lengthPenalty = 0.5f;
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
