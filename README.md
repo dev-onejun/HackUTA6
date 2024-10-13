@@ -39,6 +39,10 @@ You are a helpful AI assistant. Answer in two or three words. Please list 3 fash
 
 https://github.com/user-attachments/assets/bc89e08a-599b-4a1c-8475-5bac8b05aedb
 
+### Presentation
+
+[HackUTA6.pdf](https://github.com/user-attachments/files/17356180/HackUTA6.pdf)
+
 ### References
 
 - [1] Local Chatbot on Android with Phi-3, ONNX Runtime Mobile and ONNX Runtime Generate() API, onnxruntime-inference-examples, GitHub, https://github.com/microsoft/onnxruntime-inference-examples/tree/main/mobile/examples/phi-3/android, accessed in Oct. 13th, 2024.
