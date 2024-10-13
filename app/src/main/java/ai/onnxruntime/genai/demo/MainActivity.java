@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
         generatedTV = findViewById(R.id.sample_text);
         promptTV = findViewById(R.id.user_text);
         progressText = findViewById(R.id.progress_text);
-        //settingsButton = findViewById(R.id.idIBSettings);
         settingsButton = findViewById(R.id.configuration_button);
 
         // Trigger the download operation when the application is created
