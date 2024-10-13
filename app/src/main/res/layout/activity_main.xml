@@ -88,15 +88,18 @@
 
     <ImageButton
         android:id="@+id/configuration_button"
-        android:layout_width="50dp"
+        android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_gravity="center_vertical"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
-        android:src="@android:drawable/ic_menu_preferences"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
         android:background="#00BCD4"
-        android:backgroundTint="#24C5D7"
-        android:tint="@color/white"
+        android:backgroundTint="#78B3EF"
         android:hapticFeedbackEnabled="true"
+        android:src="@drawable/user_set"
+        android:tint="@color/grey_700"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="UseAppTint" />
