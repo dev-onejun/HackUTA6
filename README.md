@@ -31,6 +31,10 @@ A prompt is composed by weather, temperature, weight and height of the user, and
 
 ![Main Activity]()
 
+### Demo
+
+(Video)
+
 ### References
 
 - [1] Local Chatbot on Android with Phi-3, ONNX Runtime Mobile and ONNX Runtime Generate() API, onnxruntime-inference-examples, GitHub, https://github.com/microsoft/onnxruntime-inference-examples/tree/main/mobile/examples/phi-3/android, accessed in Oct. 13th, 2024.
