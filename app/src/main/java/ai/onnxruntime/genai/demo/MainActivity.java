@@ -57,12 +57,10 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
     private ActivityMainBinding binding;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private EditText userMsgEdt;
     private Model model;
     private Tokenizer tokenizer;
     private ImageButton sendMsgIB;
     private TextView generatedTV;
-    private TextView promptTV;
     private TextView progressText;
     private ImageButton settingsButton;
     private static final String TAG = "genai.demo.MainActivity";
@@ -151,7 +149,9 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
 
     public String gatAllClothes() {
         DatabaseManager databaseManager = new DatabaseManager(this);
+        Log.d(TAG, "gatAllClothes before data");
         List<String> clothesList = databaseManager.getAllClothes();
+        Log.d(TAG, "gatAllClothes after data");
         databaseManager.close();
         return clothesList.toString();
     }
@@ -196,7 +196,9 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
             // If permissions are granted, request location updates
             requestLocationUpdates();
         }
-    }private void requestLocationUpdates() {
+    }
+
+    private void requestLocationUpdates() {
         try {
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
@@ -207,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
             Log.e("AAA", "Location permission missing", e);
         }
     }
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -220,11 +223,8 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
             }
         }
 
-
         sendMsgIB = findViewById(R.id.idIBSend);
-        userMsgEdt = findViewById(R.id.idEdtMessage);
         generatedTV = findViewById(R.id.sample_text);
-        promptTV = findViewById(R.id.user_text);
         progressText = findViewById(R.id.progress_text);
         settingsButton = findViewById(R.id.configuration_button);
 
@@ -262,19 +262,18 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
                 double longitude = lng;
                 String weatherInfo = getWeather(latitude, longitude);
 
-                String promptQuestion = userMsgEdt.getText().toString();
                 String clothesItem = gatAllClothes();
                 String promptQuestion_formatted = "<system>You are a helpful AI assistant. Answer in two or three words. Please list 3 fashion item based on this conditions<|end|><|user|>"+weatherInfo+"<|end|><|user|>"+clothesItem+"This is list of fashion items that I have. Please recommend only from here.<|end|>\n<assistant|>";
                 Log.i("GenAI: prompt question", promptQuestion_formatted);
                 setVisibility();
 
                 // Disable send button while responding to prompt.
-                sendMsgIB.setEnabled(false);
-                sendMsgIB.setAlpha(0.5f);
+//                sendMsgIB.setEnabled(false);
+//                sendMsgIB.setAlpha(0.5f);
+                sendMsgIB.setEnabled(true);
+                sendMsgIB.setAlpha(1.0f);
 
-                promptTV.setText(promptQuestion);
                 // Clear Edit Text or prompt question.
-                userMsgEdt.setText("");
                 generatedTV.setText("");
 
                 new Thread(new Runnable() {
@@ -306,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
                             while (!generator.isDone()) {
                                 generator.computeLogits();
                                 generator.generateNextToken();
-                 
+
                                 int token = generator.getLastTokenInSequence(0);
 
                                 if (numTokens == 0) { //first token
@@ -459,8 +458,6 @@ public class MainActivity extends AppCompatActivity implements Consumer<String> 
     }
 
     public void setVisibility() {
-        TextView view = (TextView) findViewById(R.id.user_text);
-        view.setVisibility(View.VISIBLE);
         TextView botView = (TextView) findViewById(R.id.sample_text);
         botView.setVisibility(View.VISIBLE);
     }
