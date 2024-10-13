@@ -33,7 +33,7 @@ You are a helpful AI assistant. Answer in two or three words. Please list 3 fash
 
 ### Implementation
 
-![Main Activity]()
+![system_architecture](https://github.com/user-attachments/assets/b9752f23-5963-49f7-9bff-18c2b619d4b8)
 
 ### Demo
 
