@@ -1,61 +1,38 @@
-# Local Chatbot on Android with Phi-3, ONNX Runtime Mobile and ONNX Runtime Generate() API
+# What Should I Wear Today's Weather? (WWW)
 
-## Overview
+Personalized Clothing Recommendation Mobile Application Based on Current Weather and Temperature
 
-This is a basic [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct) Android example application with [ONNX Runtime mobile](https://onnxruntime.ai/docs/tutorials/mobile/) and [ONNX Runtime Generate() API](https://github.com/microsoft/onnxruntime-genai) with support for efficiently running generative AI models. This app demonstrates the usage of phi-3 model in a simple question answering chatbot mode.
+### Introduction
 
-### Model
-The model used here is [ONNX Phi-3 model on HuggingFace](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-onnx/tree/main/cpu_and_mobile/cpu-int4-rtn-block-32-acc-level-4) with INT4 quantization and optimizations for mobile usage.
+Black turtleneck, gray t-shirt, and black leather jacket. Steve Jobs, Mark Zuckerberg, and Jensen Huang are famous for their iconic outfits. Time is gold, and they do not want to waste it on choosing clothes. They have their own uniform, and they wear it every day. What about you? Do you have a uniform? If not, what should you wear today?
 
-You can also optimize your fine-tuned PyTorch Phi-3 model for mobile usage following this example [Phi3 optimization with Olive](https://github.com/microsoft/Olive/tree/main/examples/phi3). 
+Smart home devices are getting popular. They interact with you in everyday life, such as turning on the lights, playing music, and setting the thermostat, perhaps knowing you better than yourself. Your personal data becomes your personal AI assistant who is together with you 24/7. Samsung released Galaxy S24 featuring with Galaxy AI which has an embedded, on-device AI model. It only stores your data on your device, not sharing it with the cloud.
 
-### Requirements
-- Android Studio Giraffe | 2022.3.1 or later (installed on Mac/Windows/Linux)
-- Android SDK 29+
-- Android NDK r22+
-- An Android device or an Android Emulator
+[What Should I Wear Today's Weather?] (WWW) is a personalized clothing recommendation mobile application based on current weather and temperature. It is designed to help you choose the right clothes for the day. It is simple, easy to use, and efficient. Just open the app, and it will tell you what to wear based on the weather and temperature. No more guessing, no more wasting time. Just wear what you need to wear and enjoy your day.
 
-## Build And Run
+We adopted Phi-3, a Small Language Model (SLM) able to inference on low computational cost devices, ultimately, aiming to make an AI system that is private, secure, and efficient in personal usage.
 
-### Step 1: Clone the ONNX runtime mobile examples source code
+### Design
 
-Clone this repository to get the sample application. 
+We considered the following AI systems and concluded that they are not suitable for our project;
 
-`git@github.com:microsoft/onnxruntime-inference-examples.git`
+* Recommendation Systems
+  - Lack of Data
+  - Complicated in Time Manner (a day hackathon)
+* OpenAI APIs
+  - Privacy Concerns
+  - Costly (LLMs, Money)
 
-### [Optional] Step 2: Prepare the model
+**Small Language Model (SLM)** is embedded friendly and has low computational cost, enabling the inference on-device and offline. Phi-3 [2] is an open-source SLM that is capable of generating text and answering questions. The project is based on the Phi-3 model. The recommendation is generated with the query-answer mechanism, using the designed query to fit the recommendation format by the project team.
 
-The current set up supports downloading Phi-3-mini model directly from Huggingface repo to the android device folder. However, it takes time since the model data is >2.5G.
+A prompt is composed by weather, temperature, weight and height of the user, and the clothes of the user. Weather and temperature is fetched from the OpenWeatherMap API [3]. The user's weight, height, and clothes are asked to provide a more accurate recommendation. The prompt is sent to the Phi-3 model, and the recommendation is generated. The recommendation is displayed on the screen.
 
-You can also follow this link to download **Phi-3-mini**: https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-onnx/tree/main/cpu_and_mobile/cpu-int4-rtn-block-32-acc-level-4
-and manually copy to the android device file directory following the below instructions:
+### Implementation
 
-#### Steps for manual copying models to android device directory:
-From Android Studio:
-  - create (if necessary) and run your emulator/device
-    - make sure it has at least 8GB of internal storage
-  - debug/run the app so it's deployed to the device and creates it's `files` directory
-    - expected to be `/data/data/ai.onnxruntime.genai.demo/files`
-      - this is the path returned by `getFilesDir()`
-  - Open Device Explorer in Android Studio
-  - Navigate to `/data/data/ai.onnxruntime.genai.demo/files`
-    - adjust as needed if the value returned by getFilesDir() differs for your emulator or device
-  - copy the whole [phi-3](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-onnx/tree/main/cpu_and_mobile/cpu-int4-rtn-block-32-acc-level-4) model folder to the `files` directory
+![Main Activity]()
 
-### Step 3: Connect Android Device and Run the app
-  Connect your Android Device to your computer or select the Android Emulator in Android Studio Device manager.
+### References
 
-  Then select `Run -> Run app` and this will prompt the app to be built and installed on your device or emulator.
-
-  Now you can try giving some sample prompt questions and test the chatbot android app by clicking the ">" action button.
-
-#
-Here are some sample example screenshots of the app.
-
-<img width=20% src="images/Local_LLM_1.jpg" alt="App Screenshot 1" />
-
-<img width=20% src="images/Local_LLM_2.jpg" alt="App Screenshot 2" />
-
-<img width=20% src="images/Local_LLM_3.jpg" alt="App Screenshot 3" />
-
-<img width=20% src="images/Local_LLM_4.png" alt="App Screenshot 3" />
+- [1] Local Chatbot on Android with Phi-3, ONNX Runtime Mobile and ONNX Runtime Generate() API, onnxruntime-inference-examples, GitHub, https://github.com/microsoft/onnxruntime-inference-examples/tree/main/mobile/examples/phi-3/android, accessed in Oct. 13th, 2024.
+- [2] Abdin, Marah, et al. "Phi-3 technical report: A highly capable language model locally on your phone." arXiv preprint arXiv:2404.14219 (2024).
+- [3] OpenWeatherMap API, https://openweathermap.org/api, accessed in Oct. 13th, 2024.
